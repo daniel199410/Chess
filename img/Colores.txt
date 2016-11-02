@@ -1,0 +1,2 @@
+#b67743 Negro
+#e0bf94 Blanco

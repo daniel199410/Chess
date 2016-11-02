@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+    <head>
+    	<!--Autor: Daniel Cataño Restrepo-->
+        <!--Año: 2016-->
+        <meta charset="utf-8">
+        <title>Chess</title>
+        <link rel="stylesheet" type="text/css" href="Css/Estilos.css">
+    </head>
+    
+    <body>
+    	<div class="board">
+        	<div class="row">
+            	<div class="col white left" id="00" onClick="checkCell(0, 0)"></div>
+                <div class="col black left" id="01" onClick="checkCell(0, 1)"></div>
+                <div class="col white left" id="02" onClick="checkCell(0, 2)"></div>
+                <div class="col black left" id="03" onClick="checkCell(0, 3)"></div>
+                <div class="col white left" id="04" onClick="checkCell(0, 4)"></div>
+                <div class="col black left" id="05" onClick="checkCell(0, 5)"></div>
+                <div class="col white left" id="06" onClick="checkCell(0, 6)"></div>
+                <div class="col black left" id="07" onClick="checkCell(0, 7)"></div>
+                <div class="clear"></div>
+            </div>
+            <div class="row">
+                <div class="col black left" id="10" onClick="checkCell(1, 0)"></div>
+                <div class="col white left" id="11" onClick="checkCell(1, 1)"></div>
+                <div class="col black left" id="12" onClick="checkCell(1, 2)"></div>
+                <div class="col white left" id="13" onClick="checkCell(1, 3)"></div>
+                <div class="col black left" id="14" onClick="checkCell(1, 4)"></div>
+                <div class="col white left" id="15" onClick="checkCell(1, 5)"></div>
+                <div class="col black left" id="16" onClick="checkCell(1, 6)"></div>
+                <div class="col white left" id="17" onClick="checkCell(1, 7)"></div>
+                <div class="clear"></div>
+            </div>
+            <div class="row">
+            	<div class="col white left" id="20" onClick="checkCell(2, 0)"></div>
+                <div class="col black left" id="21" onClick="checkCell(2, 1)"></div>
+                <div class="col white left" id="22" onClick="checkCell(2, 2)"></div>
+                <div class="col black left" id="23" onClick="checkCell(2, 3)"></div>
+                <div class="col white left" id="24" onClick="checkCell(2, 4)"></div>
+                <div class="col black left" id="25" onClick="checkCell(2, 5)"></div>
+                <div class="col white left" id="26" onClick="checkCell(2, 6)"></div>
+                <div class="col black left" id="27" onClick="checkCell(2, 7)"></div>
+                <div class="clear"></div>
+            </div>
+            <div class="row">
+                <div class="col black left" id="30" onClick="checkCell(3, 0)"></div>
+                <div class="col white left" id="31" onClick="checkCell(3, 1)"></div>
+                <div class="col black left" id="32" onClick="checkCell(3, 2)"></div>
+                <div class="col white left" id="33" onClick="checkCell(3, 3)"></div>
+                <div class="col black left" id="34" onClick="checkCell(3, 4)"></div>
+                <div class="col white left" id="35" onClick="checkCell(3, 5)"></div>
+                <div class="col black left" id="36" onClick="checkCell(3, 6)"></div>
+                <div class="col white left" id="37" onClick="checkCell(3, 7)"></div>
+                <div class="clear"></div>
+            </div>
+            
+            <div class="row">
+            	<div class="col white left" id="40" onClick="checkCell(4, 0)"></div>
+                <div class="col black left" id="41" onClick="checkCell(4, 1)"></div>
+                <div class="col white left" id="42" onClick="checkCell(4, 2)"></div>
+                <div class="col black left" id="43" onClick="checkCell(4, 3)"></div>
+                <div class="col white left" id="44" onClick="checkCell(4, 4)"></div>
+                <div class="col black left" id="45" onClick="checkCell(4, 5)"></div>
+                <div class="col white left" id="46" onClick="checkCell(4, 6)"></div>
+                <div class="col black left" id="47" onClick="checkCell(4, 7)"></div>
+                <div class="clear"></div>
+            </div>
+            <div class="row">
+                <div class="col black left" id="50" onClick="checkCell(5, 0)"></div>
+                <div class="col white left" id="51" onClick="checkCell(5, 1)"></div>
+                <div class="col black left" id="52" onClick="checkCell(5, 2)"></div>
+                <div class="col white left" id="53" onClick="checkCell(5, 3)"></div>
+                <div class="col black left" id="54" onClick="checkCell(5, 4)"></div>
+                <div class="col white left" id="55" onClick="checkCell(5, 5)"></div>
+                <div class="col black left" id="56" onClick="checkCell(5, 6)"></div>
+                <div class="col white left" id="57" onClick="checkCell(5, 7)"></div>
+                <div class="clear"></div>
+            </div>
+            <div class="row">
+            	<div class="col white left" id="60" onClick="checkCell(6, 0)"></div>
+                <div class="col black left" id="61" onClick="checkCell(6, 1)"></div>
+                <div class="col white left" id="62" onClick="checkCell(6, 2)"></div>
+                <div class="col black left" id="63" onClick="checkCell(6, 3)"></div>
+                <div class="col white left" id="64" onClick="checkCell(6, 4)"></div>
+                <div class="col black left" id="65" onClick="checkCell(6, 5)"></div>
+                <div class="col white left" id="66" onClick="checkCell(6, 6)"></div>
+                <div class="col black left" id="67" onClick="checkCell(6, 7)"></div>
+                <div class="clear"></div>
+            </div>
+            <div class="row">
+                <div class="col black left" id="70" onClick="checkCell(7, 0)"></div>
+                <div class="col white left" id="71" onClick="checkCell(7, 1)"></div>
+                <div class="col black left" id="72" onClick="checkCell(7, 2)"></div>
+                <div class="col white left" id="73" onClick="checkCell(7, 3)"></div>
+                <div class="col black left" id="74" onClick="checkCell(7, 4)"></div>
+                <div class="col white left" id="75" onClick="checkCell(7, 5)"></div>
+                <div class="col black left" id="76" onClick="checkCell(7, 6)"></div>
+                <div class="col white left" id="77" onClick="checkCell(7, 7)"></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+</html>
