@@ -6,6 +6,8 @@ var board;
 var moves = [];
 var last_check = [];
 var whiteTurn = true;
+var whiteAv = 16; //Piezas que tiene el blanco
+var blackAv = 16; //Piezas que tiene el negro
 $(document).ready(function() {
 	'use strict';
 	var height = $('.col').width();
@@ -91,8 +93,8 @@ function initMatrix(){
 				board[i][j] = ['q', 'b'];
 			else if((i == 0) && (j == 4))
 				board[i][j] = ['k', 'b'];
-			/*else if((i == 4) && (j == 0))
-				board[i][j] = ['p', 'b'];*/
+			/*else if((i == 4) && (j == 3))
+				board[i][j] = ['k', 'w'];*/
 			else if(i == 1)
 				board[i][j] = ['p', 'b'];
 				
@@ -115,38 +117,53 @@ function initMatrix(){
 }
 
 function checkCell(x, y){
-	restoreCell()
+	restoreCell();
 	var color = board[x][y][1];
 	var id = '#' + x + y;
-	if(moves.length > 0){
+	if(moves.length > 0 && checkMove(x, y)){
 		paint(x, y);
 		$(id).css("background-color", "#c4c158");
-		moves.splice(0, moves.length);
+		attackPlaces();
+		console.log(whiteAttack);
+		console.log(blackAttack);
+		moves = [];
+		whiteTurn = !whiteTurn;
 		last_check = [x, y, board[x][y]];
-	}else if(board[x][y][0] == 'p'){
-		movePawn(x, y, board[x][y][1]);
+	}else{
+		moves = getMoves(x, y);
+		console.log(moves);
 		last_check = [x, y, board[x][y]];
-		$(id).css("background-color", "#66652f");
-	}else if(board[x][y][0] == 't'){
-		moveTower(x, y, board[x][y][1]);
-		last_check = [x, y, board[x][y]];
-		$(id).css("background-color", "#66652f");
-	}else if(board[x][y][0] == 'h'){
-		moveHorse(x, y, board[x][y][1]);
-		last_check = [x, y, board[x][y]];
-		$(id).css("background-color", "#66652f");
-	}else if(board[x][y][0] == 'b'){
-		moveBishop(x, y, board[x][y][1]);
-		last_check = [x, y, board[x][y]];
-		$(id).css("background-color", "#66652f");
-	}else if(board[x][y][0] == 'q'){
-		moveQueen(x, y, board[x][y][1]);
-		last_check = [x, y, board[x][y]];
-		$(id).css("background-color", "#66652f");
-	}else if(board[x][y][0] == 'k'){
-		moveKing(x, y, board[x][y][1]);	
 		$(id).css("background-color", "#66652f");
 	}
+}
+
+/*
+	Obtiene los posibles movimientos que puede hacer una 
+	ficha desde un punto específico
+*/
+function getMoves(x, y){
+	var aux = [];
+	switch(board[x][y][0]){
+		case 'p':
+			aux = movePawn(x, y, board[x][y][1]);
+		break;	
+		case 't':
+			aux = moveTower(x, y, board[x][y][1]);
+		break;
+		case 'h':
+			aux = moveHorse(x, y, board[x][y][1]);
+		break;
+		case 'b':
+			aux = moveBishop(x, y, board[x][y][1]);
+		break;
+		case 'q':
+			aux = moveQueen(x, y, board[x][y][1]);
+		break;
+		case 'k':
+			aux = moveKing(x, y, board[x][y][1]);	
+		break;
+	}
+	return aux;
 }
 
 /*
@@ -154,7 +171,7 @@ function checkCell(x, y){
 	un peón
 */
 function movePawn(x, y, c){
-	moves.splice(0, moves.length);
+	var aux = [];
 	var i = 0;
 	/*
 		b: black
@@ -165,25 +182,22 @@ function movePawn(x, y, c){
 			if(x + 1 <= 7 && !whiteTurn){
 			//Si hay una pieza enemiga en la diagonal izquierda '/'
 				if(y - 1 >= 0 && board[x + 1][y - 1][1] == 'w'){
-					moves[i] = [x + 1, y - 1];
+					aux[i] = [x + 1, y - 1];
 					i++;
 				}
 				//Si no hay piezas al frente del peón
 				if(board[x + 1][y][0] == 'n'){
-					moves[i] = [x + 1, y];
+					aux[i] = [x + 1, y];
 					i++;
 				}
 				//Si hay una pieza enemiga en la diagonal deneracha '\'
 				if(y + 1 <= 7 && board[x + 1][y + 1][1] == 'w'){
-					moves[i] = [x + 1, y + 1];
+					aux[i] = [x + 1, y + 1];
 					i++;
 				}
 				//Si no hay piezas en las dos casillas que están al frente del peón
 				if(x == 1 && board[x + 2][y][0] == 'n' && board[x + 1][y][0] == 'n'){
-					moves[i] = [x + 2, y];
-				}
-				if(i != 0){
-					whiteTurn = true;	
+					aux[i] = [x + 2, y];
 				}
 			}
 		break;
@@ -191,29 +205,27 @@ function movePawn(x, y, c){
 			if(x - 1 >= 0 && whiteTurn){
 			//Si hay una pieza enemiga en la diagonal izquierda '/'
 				if(y - 1 >= 0 && board[x - 1][y - 1][1] == 'b'){
-					moves[i] = [x - 1, y - 1];
+					aux[i] = [x - 1, y - 1];
 					i++;
 				}
 				//Si no hay piezas al frente del peón
 				if(board[x - 1][y][0] == 'n'){
-					moves[i] = [x - 1, y];
+					aux[i] = [x - 1, y];
 					i++;
 				}
 				//Si hay una pieza enemiga en la diagonal deneracha '\'
 				if(y + 1 <= 7 && board[x - 1][y + 1][1] == 'b'){
-					moves[i] = [x - 1, y + 1];
+					aux[i] = [x - 1, y + 1];
 					i++;
 				}
 				//Si no hay piezas en las dos casillas que están al frente del peón
 				if(x == 6 && board[x - 2][y][0] == 'n' && board[x - 1][y][0] == 'n'){
-					moves[i] = [x - 2, y];
-				}
-				if(i != 0){
-					whiteTurn = false;	
+					aux[i] = [x - 2, y];
 				}
 			}
 		break;
 	}
+	return aux;
 }
 
 /*
@@ -222,13 +234,13 @@ function movePawn(x, y, c){
 */
 function moveTower(x, y, c){
 	var color = board[x][y][1];
+	var aux = [];
 	if((whiteTurn && color == 'w') || (!whiteTurn && color == 'b')){
 		var horizontalPositions = checkRows(x, y, c);
 		var verticalPositions = checkCols(x, y, c);
-		moves.splice(0, moves.length);
-		moves = moves.concat(horizontalPositions, verticalPositions);
-		whiteTurn = !whiteTurn;
+		aux = aux.concat(horizontalPositions, verticalPositions);
 	}
+	return aux;
 }
 
 /*
@@ -237,55 +249,55 @@ function moveTower(x, y, c){
 */
 function moveHorse(x, y, c){
 	var color = board[x][y][1];
+	var aux = [];
 	if((whiteTurn && color == 'w') || (!whiteTurn && color == 'b')){
-		moves.splice(0, moves.length);
 		var i = 0;
 		// ─┐
 		if(x - 1 >= 0 && y - 2 >= 0 && (board[x - 1][y - 2][0] == 'n' || board[x - 1][y - 2][1] != c)){
-			moves[i] = [x - 1, y - 2];
+			aux[i] = [x - 1, y - 2];
 			i++;
 		}
 		/*	┐
 			│   */
 		if(x - 2 >= 0 && y - 1 >= 0 && (board[x - 2][y - 1][0] == 'n' || board[x - 2][y - 1][1] != c)){
-			moves[i] = [x - 2, y - 1];
+			aux[i] = [x - 2, y - 1];
 			i++;
 		}
 		/*	┌
 			│   */
 		if(x - 2 >= 0 && y + 1 <= 7 && (board[x - 2][y + 1][0] == 'n' || board[x - 2][y + 1][1] != c)){ 
-			moves[i] = [x - 2, y + 1];
+			aux[i] = [x - 2, y + 1];
 			i++;
 		}
 		// ┌─
 		if(x - 1 >= 0 && y + 2 <= 7 && (board[x - 1][y + 2][0] == 'n' || board[x - 1][y + 2][1] != c)){
-			moves[i] = [x - 1, y + 2];
+			aux[i] = [x - 1, y + 2];
 			i++;
 		}
 		//└	─
 		if(x + 1 <= 7 && y + 2 <= 7 && (board[x + 1][y + 2][0] == 'n' || board[x + 1][y + 2][1] != c)){
-			moves[i] = [x + 1, y + 2];
+			aux[i] = [x + 1, y + 2];
 			i++;
 		}
 		/*	│
 			└	*/
 		if(x + 2 <= 7 && y + 1 <= 7 && (board[x + 2][y + 1][0] == 'n' || board[x + 2][y + 1][1] != c)){
-			moves[i] = [x + 2, y + 1];
+			aux[i] = [x + 2, y + 1];
 			i++;
 		}
 		/*	│
 			┘	*/
 		if(x + 2 <= 7 && y - 1 >= 0 && (board[x + 2][y - 1][0] == 'n' || board[x + 2][y - 1][1] != c)){
-			moves[i] = [x + 2, y - 1];
+			aux[i] = [x + 2, y - 1];
 			i++;
 		}
 		//	─┘
 		if(x + 1 <= 7 && y - 2 >= 0 && (board[x + 1][y - 2][0] == 'n' || board[x + 1][y - 2][1] != c)){
-			moves[i] = [x + 1, y - 2];
+			aux[i] = [x + 1, y - 2];
 			i++;
 		}
-		whiteTurn = !whiteTurn;
 	}
+	return aux;
 }
 
 /*
@@ -293,11 +305,12 @@ function moveHorse(x, y, c){
 	desde cierta posición
 */
 function moveBishop(x, y, c){
+	var aux = [];
 	var color = board[x][y][1];
 	if((whiteTurn && color == 'w') || (!whiteTurn && color == 'b')){
-		moves = checkDiag(x, y, c);
-		whiteTurn = !whiteTurn;
+		aux = checkDiag(x, y, c);
 	}
+	return aux;
 }
 
 /*
@@ -306,14 +319,14 @@ function moveBishop(x, y, c){
 */
 function moveQueen(x, y, c){
 	var color = board[x][y][1];
+	var aux = [];
 	if((whiteTurn && color == 'w') || (!whiteTurn && color == 'b')){
 		var horizontalMoves = checkRows(x, y, c);	
 		var verticalMoves = checkCols(x, y, c);
 		var diagonalMoves = checkDiag(x, y, c);
-		moves.splice(0, moves.length);
-		moves = moves.concat(horizontalMoves, verticalMoves, diagonalMoves);
-		whiteTurn = !whiteTurn;
+		aux = aux.concat(horizontalMoves, verticalMoves, diagonalMoves);
 	}
+	return aux;
 }
 
 /*
@@ -321,7 +334,44 @@ function moveQueen(x, y, c){
 	desde cierta posición
 */
 function moveKing(x, y, c){
-			
+	var color = board[x][y][1];;
+	var aux = [];
+	var i = 0;
+	if((whiteTurn && color == 'w') || (!whiteTurn && color == 'b')){
+		if(x - 1 >= 0 && y - 1 >= 0 && (board[x - 1][y - 1][1] == 'n' || board[x - 1][y - 1][1] != c) && !isAttaqued(x - 1, y - 1, c)){
+			aux[i] = [x - 1, y - 1];
+			i++;
+		}
+		if(x - 1 >= 0 && (board[x - 1][y][1] == 'n' || board[x - 1][y][1] != c) && !isAttaqued(x - 1, y, c)){
+			aux[i] = [x - 1, y];
+			i++;
+		}
+		if(x - 1 >= 0 && y + 1 < 8 && (board[x - 1][y + 1][1] == 'n' || board[x - 1][y + 1][1] != c) && !isAttaqued(x - 1, y + 1, c)){
+			aux[i] = [x - 1, y + 1];
+			i++;
+		}
+		if(y + 1 < 8 && (board[x][y + 1][1] == 'n' || board[x][y + 1][1] != c) && !isAttaqued(x, y + 1, c)){
+			aux[i] = [x, y + 1];
+			i++;
+		}
+		if(x + 1 < 8 && y + 1 < 8 && (board[x + 1][y + 1][1] == 'n' || board[x + 1][y + 1][1] != c) && !isAttaqued(x + 1, y + 1, c)){
+			aux[i] = [x + 1, y + 1];
+			i++;
+		}
+		if(x + 1 < 8 && (board[x + 1][y][1] == 'n' || board[x + 1][y][1] != c) && !isAttaqued(x + 1, y, c)){
+			aux[i] = [x + 1, y];
+			i++;
+		}
+		if(x + 1 < 8 && y - 1 >= 0 && (board[x + 1][y - 1][1] == 'n' || board[x + 1][y - 1][1] != c) && !isAttaqued(x + 1, y - 1)){
+			aux[i] = [x + 1, y - 1];
+			i++;
+		}
+		if(y - 1 >= 0 && !isAttaqued && (board[x][y - 1][1] == 'n' || board[x][y - 1][1] != c) && !isAttaqued(x, y - 1, c)){
+			aux[i] = [x, y - 1];
+			i++;
+		}
+	}
+	return aux;
 }
 
 /*
@@ -518,6 +568,17 @@ function checkDiag(x, y, c){
 }
 
 /*
+	Revisa si un movimiento es correcto
+*/
+function checkMove(x, y){
+	for(var i = 0; i < moves.length; i++){
+		if(moves[i][0] == x && moves[i][1] == y){
+			return true;	
+		}
+	}
+}
+
+/*
 	Pinta una figura en la osición (x, y).
 */
 function paint(x, y){
@@ -578,11 +639,23 @@ function paint(x, y){
 			*/
 			board[lastX][lastY][0] = 'n';
 			board[lastX][lastY][1] = 'n';
+			
+			/*
+				Se hace el control de las fichas restantes de cada
+				jugador
+			*/
+			if(color == 'w' && board[x][y][0] != 'n'){ //Si el blanco come:
+				blackAv--;
+			}else if(color == 'b' && board[x][y][0] != 'n'){ //Si el negro come
+				whiteAv--;
+			}
+			
 			/*
 				Se actualiza la posición de la ficha
 			*/
 			board[x][y][0] = piece;
 			board[x][y][1] = color;
+			
 			/*
 				Se elimina de la posición actual y de la que se va a 
 				mover la imagen existente en ese DIV y se agrega la imagen
@@ -592,6 +665,7 @@ function paint(x, y){
 			$(id).children().remove();
 			$(id).prepend(imageName);
 			break;
+			
 		}
 	}
 }
@@ -610,4 +684,67 @@ function restoreCell(){
 	//Si no
 		$(lastId).css("background-color", "#b67743");
 	}
+}
+
+/*
+	Retorna las posiciones que están siendo atacadas por el blanco
+	y las posiciones atacadas por el negro
+*/
+function attackPlaces(){
+	var b = 0;
+	var w = 0;
+	whiteAttack = [];
+	blackAttack = [];
+	for(var j = 0; j < 8; j++){
+		for(var k = 0; k < 8; k++){
+			switch(board[j][k][1]){
+				case 'w':
+					whiteAttack = whiteAttack.concat(getMoves(j, k));
+					w++;
+					if(w == whiteAv){
+						break;	
+					}
+				case 'b':
+					blackAttack = blackAttack.concat(getMoves(j, k));
+					b++;
+					if(b == blackAv){
+						break;	
+					}
+			}
+			if(w == whiteAv && b == blackAv){
+				break;	
+			}
+		}
+	}
+}
+
+/*
+	Retorna verdadero si la casilla está siendo atacada
+*/
+function isAttaqued(x, y, c){
+	switch(c){
+		case 'w':
+			if(contains(x, y, blackAttack)){
+				return true;	
+			};
+		break;
+		case 'b':
+			if(contains(x, y, whiteAttack)){
+				return true;	
+			};
+		break;
+	}
+	return false;
+}
+
+/*
+	Retorna verdadero si en array 
+*/
+function contains(x, y, array){
+	for(var i = 0; i < array.length; i++){
+		if(array[i][0] == x && array[i][1] == y){
+			return true;	
+		}
+	}
+	return false;
 }
